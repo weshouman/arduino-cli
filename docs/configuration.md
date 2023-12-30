@@ -74,11 +74,33 @@ $ arduino-cli core update-index --additional-urls https://downloads.arduino.cc/p
 
 ### Environment variables
 
+The `ARDUINO_CONFIG` environment variable sets the configuration file that Arduino CLI uses. It is checked before the `--config-file` command line flag and the automatic checking of the current and parent directories.
+
 All configuration options can be set via environment variables. The variable names start with `ARDUINO`, followed by the
 configuration key names, with each component separated by `_`. For example, the `ARDUINO_DIRECTORIES_USER` environment
 variable sets the `directories.user` configuration option.
 
-On Linux or macOS, you can use the [`export` command][export command] to set environment variables. On Windows cmd, you
+On Linux or macOS, you can use the [`export` command][export command] to set environment variables, for example:
+
+```sh
+$ export ARDUINO_CONFIG=/path/to/config.yaml
+```
+
+On Windows cmd, you can use the [`set` command][set command] to achieve the same, for example:
+
+```cmd
+> set ARDUINO_CONFIG=C:\path\to\config.yaml
+```
+
+On Windows PowerShell, use the `$env:` method, for example:
+
+```powershell
+> $env:ARDUINO_CONFIG="C:\path\to\config.yaml"
+```
+
+After setting the `ARDUINO_CONFIG` environment variable, the specified configuration file is used for all subsequent Arduino CLI commands.
+
+On Linux or macOS, you
 can use the [`set` command][set command].
 
 `ARDUINO_BOARD_MANAGER_ADDITIONAL_URLS` environment variables can be a list of space-separated URLs.

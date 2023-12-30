@@ -772,6 +772,32 @@ func TestSetBoolWithMultipleArguments(t *testing.T) {
 	require.Contains(t, string(stderr), "Can't set multiple values in key library.enable_unsafe_install")
 }
 
+func TestARDUINO_CONFIGEnvVar(t *testing.T) {
+	env, cli := integrationtest.CreateArduinoCLIWithEnvironment(t)
+	defer env.CleanUp()
+
+	// Set ARDUINO_CONFIG environment variable
+	testConfigFile := "test-config.yaml"
+	require.NoError(t, os.Setenv("ARDUINO_CONFIG", testConfigFile))
+	defer func() { require.NoError(t, os.Unsetenv("ARDUINO_CONFIG")) }()
+
+	// Run config init command
+	_, stderr, err := cli.Run("config", "init")
+	require.Empty(t, stderr)
+	require.NoError(t, err)
+
+	// Check that the test configuration file is used
+	require.FileExists(t, testConfigFile)
+
+	// Read the configuration file and make sure it's not empty
+	testConfig, err := ioutil.ReadFile(testConfigFile)
+	require.NoError(t, err)
+	require.NotEmpty(t, testConfig)
+
+	// To avoid false positives, check that specific configurations are present
+	require.Contains(t, string(testConfig), "board_manager")
+}
+
 func TestDelete(t *testing.T) {
 	env, cli := integrationtest.CreateArduinoCLIWithEnvironment(t)
 	defer env.CleanUp()
